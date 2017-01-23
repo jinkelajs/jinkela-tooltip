@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://npm.elemecdn.com/uglifyjs!jinkela@1.2.19/umd.js"></script>
+    <script src="../jinkela-tooltip.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        (new class extends Jinkela {
+          get template() {
+            return `
+              <span tooltip="Welcome!">Hover on me</span>
+            `;
+          }
+        }).to(document.body);
+
+        (new class extends Jinkela {
+          get tooltip() {
+            let value = new class extends Jinkela {
+              get template() {
+                return `
+                  <div>
+                    <em>Jinkela</em> component
+                  </div>
+                `;
+              }
+              get styleSheet() {
+                return `
+                  :scope {
+                    > em {
+                      margin-right: .5em;
+                      font-size: 150%;
+                      vertical-align: middle;
+                    }
+                  }
+                `;
+              }
+            };
+            Object.defineProperty(this, 'tooltip', { value, configurable: true });
+            return value;
+          }
+          get template() {
+            return `
+              <span tooltip="{tooltip}">Hover on me</span>
+            `;
+          }
+        }).to(document.body);
+      });
+    </script>
+  </head>
+</html>
