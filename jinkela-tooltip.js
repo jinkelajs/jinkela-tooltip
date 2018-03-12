@@ -7,14 +7,12 @@
         </div>
       `;
     }
-    beforeParse(params) {
-      params.content = params.content || document.createTextNode(params.correspondingElement.getAttribute('tooltip'));
-    }
-    init() {
-      this.to(document.body);
-      let rect = this.correspondingElement.getBoundingClientRect();
+    popup(target, content) {
+      this.content = content;
+      let rect = target.getBoundingClientRect();
       this.element.style.left = (rect.left + rect.right) / 2 + 'px';
       this.element.style.top = rect.bottom + 'px';
+      this.to(document.body);
     }
     destroy() {
       this.element.remove();
@@ -42,23 +40,23 @@
     }
   }
 
-  let tooltip;
-  Jinkela.register('tooltip', (that, node, ownerElement) => {
-    if (ownerElement.component) ownerElement = ownerElement.component.element;
-    let content;
-    ownerElement.addEventListener('mouseenter', () => {
-      if (tooltip) {
-        tooltip.destroy();
-        tooltip = null;
-      }
-      tooltip = new Tooltip({ correspondingElement: ownerElement, content });
-    });
-    ownerElement.addEventListener('mouseleave', () => {
-      if (tooltip) {
-        tooltip.destroy();
-        tooltip = null;
-      }
-    });
-    return value => { content = value; };
+  let tooltip = new Tooltip();
+
+  Jinkela.register({
+    pattern: /^tooltip$/,
+    priority: 100,
+    handler: (that, node, ownerElement) => {
+      if (ownerElement.component) ownerElement = ownerElement.component.element;
+      let content = node.value;
+      ownerElement.addEventListener('mouseenter', () => {
+        tooltip.popup(ownerElement, content);
+      });
+      ownerElement.addEventListener('mouseleave', () => {
+        tooltip.destroy(); // TODO: Fade out
+      });
+      node['@@subscribers'].push(() => {
+        content = node.jinkelaValue;
+      });
+    }
   });
 }
