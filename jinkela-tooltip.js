@@ -7,21 +7,39 @@
         </div>
       `;
     }
+    get updatePosition() {
+      let value = () => {
+        let { binding } = this;
+        let rect = binding.getBoundingClientRect();
+        this.element.style.left = (rect.left + rect.right) / 2 + 'px';
+        this.element.style.top = rect.bottom + 'px';
+      };
+      Object.defineProperty(this, 'updatePosition', { value, configurable: true });
+      return value;
+    }
     popup(target, content) {
       this.content = content;
-      let rect = target.getBoundingClientRect();
-      this.element.style.left = (rect.left + rect.right) / 2 + 'px';
-      this.element.style.top = rect.bottom + 'px';
+      this.binding = target;
+
+      if (content.maxWidth === void 0) {
+        this.element.style.removeProperty('maxWidth');
+      } else {
+        this.element.style.maxWidth = content.maxWidth;
+      }
+
+      this.updatePosition();
       this.to(document.body);
+      addEventListener('scroll', this.updatePosition);
     }
     destroy() {
       this.element.remove();
+      removeEventListener('scroll', this.updatePosition);
     }
     get styleSheet() {
       return `
         :scope {
           margin-top: 5px;
-          position: absolute;
+          position: fixed;
           padding: 4px 8px;
           font-size: 12px;
           max-width: 200px;
