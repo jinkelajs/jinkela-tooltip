@@ -1,0 +1,47 @@
+<script src="//cdn.jsdelivr.net/npm/jinkela@1.3.2/umd.min.js"></script>
+<script src="/tester.js"></script>
+<script src="/jinkela-tooltip.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  let span = (new class extends Jinkela {
+    get tooltip() {
+      let value = new class extends Jinkela {
+        get maxWidth() { return 30; }
+        get template() {
+          return `
+            <div data-hehe="hehe">
+              <em>Jinkela</em> component
+            </div>
+          `;
+        }
+        get styleSheet() {
+          return `
+            :scope {
+              > em {
+                margin-right: .5em;
+                font-size: 150%;
+                vertical-align: middle;
+              }
+            }
+          `;
+        }
+      };
+      Object.defineProperty(this, 'tooltip', { value, configurable: true });
+      return value;
+    }
+    get template() {
+      return `
+        <span tooltip="{tooltip}">Hover on me</span>
+      `;
+    }
+  }).to(document.body);
+
+  span.element.dispatchEvent(new MouseEvent('mouseenter'));
+
+  Tester.assert(document.body.lastElementChild.offsetWidth < 50, 'width must less than 50');
+
+  Tester.feedback(true);
+
+});
+</script>

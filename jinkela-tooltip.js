@@ -20,6 +20,13 @@
     popup(target, content) {
       this.content = content;
       this.binding = target;
+
+      if (content.maxWidth === void 0) {
+        this.element.style.removeProperty('maxWidth');
+      } else {
+        this.element.style.maxWidth = content.maxWidth;
+      }
+
       this.updatePosition();
       this.to(document.body);
       addEventListener('scroll', this.updatePosition);
