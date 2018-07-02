@@ -1,0 +1,22 @@
+<script src="//cdn.jsdelivr.net/npm/jinkela@1.3.2/umd.min.js"></script>
+<script src="/tester.js"></script>
+<script src="/jinkela-tooltip.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  let span = (new class extends Jinkela {
+    get template() {
+      return `
+        <span tooltip="Welcome!">Hover on me</span>
+      `;
+    }
+  }).to(document.body);
+
+  span.element.dispatchEvent(new MouseEvent('mouseenter'));
+
+  Tester.assert(document.body.lastElementChild.textContent.trim() === 'Welcome!');
+
+  Tester.feedback(true);
+
+});
+</script>

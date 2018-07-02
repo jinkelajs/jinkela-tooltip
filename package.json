@@ -1,0 +1,12 @@
+{
+  "name": "jinkela-tooltip",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-elemefe": "^0.3.0",
+    "ui-tester": "^1.1.4"
+  },
+  "scripts": {
+    "test": "ui-tester-start tests"
+  }
+}
